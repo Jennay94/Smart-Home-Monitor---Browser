@@ -18,111 +18,109 @@
 
     <main>
         <section id="loginSection" class="card login-card">
-            <h2>Email Login Demo</h2>
+            <h2>Login</h2>
             <p class="muted">
-                This demo simulates an email verification login system for educational purposes.
+                Please log in to access the Smart Home Monitoring System dashboard.
             </p>
 
-            <div id="loggedOutView">
-                <label for="emailInput">Email address</label>
-                <input type="email" id="emailInput" placeholder="example@email.com">
+            <label for="usernameInput">Username</label>
+            <input type="text" id="usernameInput" placeholder="Enter username">
 
-                <button id="sendCodeBtn">Send Verification Code</button>
+            <label for="passwordInput">Password</label>
+            <input type="password" id="passwordInput" placeholder="Enter password">
 
-                <div id="codeArea" class="hidden">
-                    <p class="demo-email">
-                        Demo email code: <strong id="generatedCodeText"></strong>
-                    </p>
+            <button id="loginBtn">Login</button>
 
-                    <label for="codeInput">Verification code</label>
-                    <input type="text" id="codeInput" placeholder="Enter 6-digit code">
+            <p id="loginMessage" class="message"></p>
 
-                    <button id="verifyCodeBtn">Verify Code</button>
-                </div>
-
-                <p id="loginMessage" class="message"></p>
-            </div>
-
-            <div id="loggedInView" class="hidden">
-                <p>You are logged in as:</p>
-                <strong id="userEmailText"></strong>
-                <button id="logoutBtn" class="danger-btn">Log out</button>
-            </div>
-        </section>
-
-        <section class="dashboard-grid">
-            <article class="card sensor-card">
-                <h2>Indoor Temperature</h2>
-                <p class="value"><span id="temperatureValue">22</span> °C</p>
-                <input type="range" id="temperatureSlider" min="10" max="40" value="22">
-            </article>
-
-            <article class="card sensor-card">
-                <h2>Humidity</h2>
-                <p class="value"><span id="humidityValue">45</span> %</p>
-                <input type="range" id="humiditySlider" min="10" max="90" value="45">
-            </article>
-
-            <article class="card sensor-card">
-                <h2>Air Quality</h2>
-                <p class="value"><span id="airQualityValue">60</span> %</p>
-                <input type="range" id="airQualitySlider" min="0" max="100" value="60">
-            </article>
-
-            <article class="card sensor-card">
-                <h2>Energy Usage</h2>
-                <p class="value"><span id="energyValue">350</span> W</p>
-                <input type="range" id="energySlider" min="50" max="2000" value="350">
-            </article>
-        </section>
-
-        <section class="card">
-            <h2>Smart Device Status</h2>
-
-            <div class="device-grid">
-                <div class="device-item">
-                    <h3>Heating</h3>
-                    <p id="heatingStatus" class="status">OFF</p>
-                </div>
-
-                <div class="device-item">
-                    <h3>Cooling</h3>
-                    <p id="coolingStatus" class="status">OFF</p>
-                </div>
-
-                <div class="device-item">
-                    <h3>Air Purifier</h3>
-                    <p id="airPurifierStatus" class="status">OFF</p>
-                </div>
-
-                <div class="device-item">
-                    <h3>Energy Alert</h3>
-                    <p id="energyAlertStatus" class="status">NORMAL</p>
-                </div>
-            </div>
-
-            <button id="runAutomationBtn">Run Automation</button>
-        </section>
-
-        <section class="card">
-            <h2>Outdoor Weather</h2>
-            <p class="muted">
-                This section uses Fetch API to request weather data from Open-Meteo.
+            <p class="demo-login-info">
+                Demo login: <strong>admin</strong> / <strong>smart123</strong>
             </p>
-
-            <div class="weather-form">
-                <input type="text" id="cityInput" placeholder="Enter city, e.g. Kuopio">
-                <button id="weatherBtn">Get Weather</button>
-            </div>
-
-            <div id="weatherResult" class="weather-result">
-                <p>No weather data loaded yet.</p>
-            </div>
         </section>
 
-        <section class="card">
-            <h2>System Event Log</h2>
-            <ul id="eventLog"></ul>
+        <section id="dashboardSection" class="hidden">
+            <div class="dashboard-topbar">
+                <p>Logged in as <strong id="loggedInUserText">admin</strong></p>
+                <button id="logoutBtn" class="danger-btn">Logout</button>
+            </div>
+
+            <section class="dashboard-grid">
+                <article class="card sensor-card">
+                    <h2>Indoor Temperature</h2>
+                    <p class="value"><span id="temperatureValue">22</span> °C</p>
+                    <input type="range" id="temperatureSlider" min="10" max="40" value="22">
+                </article>
+
+                <article class="card sensor-card">
+                    <h2>Humidity</h2>
+                    <p class="value"><span id="humidityValue">45</span> %</p>
+                    <input type="range" id="humiditySlider" min="10" max="90" value="45">
+                </article>
+
+                <article class="card sensor-card">
+                    <h2>Air Quality</h2>
+                    <p class="value"><span id="airQualityValue">60</span> %</p>
+                    <input type="range" id="airQualitySlider" min="0" max="100" value="60">
+                </article>
+
+                <article class="card sensor-card">
+                    <h2>Energy Usage</h2>
+                    <p class="value"><span id="energyValue">350</span> W</p>
+                    <input type="range" id="energySlider" min="50" max="2000" value="350">
+                </article>
+            </section>
+
+            <section class="card">
+                <h2>Smart Device Status</h2>
+
+                <div class="device-grid">
+                    <div class="device-item">
+                        <h3>Heating</h3>
+                        <p id="heatingStatus" class="status">OFF</p>
+                    </div>
+
+                    <div class="device-item">
+                        <h3>Cooling</h3>
+                        <p id="coolingStatus" class="status">OFF</p>
+                    </div>
+
+                    <div class="device-item">
+                        <h3>Air Purifier</h3>
+                        <p id="airPurifierStatus" class="status">OFF</p>
+                    </div>
+
+                    <div class="device-item">
+                        <h3>Energy Alert</h3>
+                        <p id="energyAlertStatus" class="status">NORMAL</p>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button id="loadSensorDataBtn">Load Sensor Data</button>
+                    <button id="runAutomationBtn">Run Automation</button>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>Outdoor Weather</h2>
+                <p class="muted">
+                    This section uses Fetch API to request weather data from Open-Meteo.
+                </p>
+
+                <div class="weather-form">
+                    <input type="text" id="cityInput" placeholder="Enter city, e.g. Kuopio">
+                    <button id="weatherBtn">Get Weather</button>
+                </div>
+
+                <div id="weatherResult" class="weather-result">
+                    <p>No weather data loaded yet.</p>
+                </div>
+            </section>
+
+            <section class="card">
+                <h2>System Event Log</h2>
+                <ul id="eventLog"></ul>
+            </section>
         </section>
     </main>
 
