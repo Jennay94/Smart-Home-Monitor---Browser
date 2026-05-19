@@ -8,12 +8,21 @@
 </head>
 <body>
     <header class="main-header">
-        <div>
-            <h1>Smart Home Monitoring System</h1>
-            <p>Browser-based dashboard for monitoring indoor conditions and smart devices.</p>
-        </div>
+        <nav class="navbar">
+            <div class="brand">
+                <span class="brand-icon">🏠</span>
+                <span class="brand-name">Smart Home Monitor</span>
+            </div>
 
-        <button id="themeToggle" class="secondary-btn">Toggle Theme</button>
+            <div class="nav-links">
+                <a href="#dashboardSection">Dashboard</a>
+                <a href="#weatherSection">Weather API</a>
+                <a href="#automationSection">Automation</a>
+                <a href="#eventLogSection">Event Log</a>
+            </div>
+
+            <button id="themeToggle" class="theme-btn">Toggle theme</button>
+        </nav>
     </header>
 
     <main>
@@ -39,6 +48,15 @@
         </section>
 
         <section id="dashboardSection" class="hidden">
+            <section class="hero-section">
+                <p class="eyebrow">Browser Programming Assignment</p>
+                <h1>Smart Home Monitoring System</h1>
+                <p>
+                    A browser-based dashboard that simulates smart home sensor monitoring,
+                    automation rules, API-based data loading, and local user login.
+                </p>
+            </section>
+
             <div class="dashboard-topbar">
                 <p>Logged in as <strong id="loggedInUserText">admin</strong></p>
                 <button id="logoutBtn" class="danger-btn">Logout</button>
@@ -70,8 +88,11 @@
                 </article>
             </section>
 
-            <section class="card">
+            <section id="automationSection" class="card">
                 <h2>Smart Device Status</h2>
+                <p class="muted">
+                    Device states are updated based on the current sensor values.
+                </p>
 
                 <div class="device-grid">
                     <div class="device-item">
@@ -101,7 +122,7 @@
                 </div>
             </section>
 
-            <section class="card">
+            <section id="weatherSection" class="card">
                 <h2>Outdoor Weather</h2>
                 <p class="muted">
                     This section uses Fetch API to request weather data from Open-Meteo.
@@ -117,7 +138,7 @@
                 </div>
             </section>
 
-            <section class="card">
+            <section id="eventLogSection" class="card">
                 <h2>System Event Log</h2>
                 <ul id="eventLog"></ul>
             </section>
