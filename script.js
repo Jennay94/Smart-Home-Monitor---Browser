@@ -7,6 +7,75 @@ const appState = {
     }
 };
 
+const validUser = {
+    username: "admin",
+    password: "smart123"
+};
+
+const loginSection = document.getElementById("loginSection");
+const dashboardSection = document.getElementById("dashboardSection");
+const usernameInput = document.getElementById("usernameInput");
+const passwordInput = document.getElementById("passwordInput");
+const loginBtn = document.getElementById("loginBtn");
+const loginMessage = document.getElementById("loginMessage");
+const logoutBtn = document.getElementById("logoutBtn");
+const loggedInUserText = document.getElementById("loggedInUserText");
+
+let loggedInUser = localStorage.getItem("smartHomeLoggedInUser");
+
+function updateAuthView() {
+    if (loggedInUser) {
+        loginSection.classList.add("hidden");
+        dashboardSection.classList.remove("hidden");
+        loggedInUserText.textContent = loggedInUser;
+    } else {
+        loginSection.classList.remove("hidden");
+        dashboardSection.classList.add("hidden");
+    }
+}
+
+function loginUser() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (username === validUser.username && password === validUser.password) {
+        loggedInUser = username;
+        localStorage.setItem("smartHomeLoggedInUser", username);
+
+        loginMessage.textContent = "";
+        updateAuthView();
+
+        if (typeof addLog === "function") {
+            addLog(`${username} logged in successfully.`);
+        }
+    } else {
+        loginMessage.textContent = "Invalid username or password.";
+        loginMessage.style.color = "red";
+    }
+}
+
+function logoutUser() {
+    if (typeof addLog === "function") {
+        addLog(`${loggedInUser} logged out.`);
+    }
+
+    loggedInUser = null;
+    localStorage.removeItem("smartHomeLoggedInUser");
+    updateAuthView();
+}
+
+loginBtn.addEventListener("click", loginUser);
+
+passwordInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        loginUser();
+    }
+});
+
+logoutBtn.addEventListener("click", logoutUser);
+
+updateAuthView();
+
 const temperatureSlider = document.getElementById("temperatureSlider");
 const humiditySlider = document.getElementById("humiditySlider");
 const airQualitySlider = document.getElementById("airQualitySlider");
@@ -22,6 +91,7 @@ const coolingStatus = document.getElementById("coolingStatus");
 const airPurifierStatus = document.getElementById("airPurifierStatus");
 const energyAlertStatus = document.getElementById("energyAlertStatus");
 
+const loadSensorDataBtn = document.getElementById("loadSensorDataBtn");
 const runAutomationBtn = document.getElementById("runAutomationBtn");
 const eventLog = document.getElementById("eventLog");
 
@@ -44,7 +114,37 @@ function updateSensorValues() {
     airQualityValue.textContent = appState.sensors.airQuality;
     energyValue.textContent = appState.sensors.energy;
 }
+async function loadSensorDataFromApi() {
+    try {
+        const response = await fetch("sensor-data.json");
 
+        if (!response.ok) {
+            throw new Error("Could not load sensor data.");
+        }
+
+        const data = await response.json();
+
+        appState.sensors.temperature = Number(data.indoorTemperature);
+        appState.sensors.humidity = Number(data.humidity);
+        appState.sensors.airQuality = Number(data.airQuality);
+        appState.sensors.energy = Number(data.energy);
+
+        temperatureSlider.value = appState.sensors.temperature;
+        humiditySlider.value = appState.sensors.humidity;
+        airQualitySlider.value = appState.sensors.airQuality;
+        energySlider.value = appState.sensors.energy;
+
+        updateSensorValues();
+
+        addLog("Sensor data loaded from mock sensor API.");
+    } catch (error) {
+        addLog("Failed to load sensor data from API.");
+    }
+}
+function setStatus(element, text, className) {
+    element.textContent = text;
+    element.className = `status ${className}`;
+}
 function setStatus(element, text, className) {
     element.textContent = text;
     element.className = `status ${className}`;
@@ -93,6 +193,7 @@ humiditySlider.addEventListener("input", updateSensorValues);
 airQualitySlider.addEventListener("input", updateSensorValues);
 energySlider.addEventListener("input", updateSensorValues);
 
+loadSensorDataBtn.addEventListener("click", loadSensorDataFromApi);
 runAutomationBtn.addEventListener("click", runSmartHomeAutomation);
 
 updateSensorValues();
