@@ -266,62 +266,20 @@ function addChatMessage(sender, message, type) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function generateSmartHomeReply(userMessage) {
-    const message = userMessage.toLowerCase();
-
-    const temperature = appState.sensors.temperature;
-    const humidity = appState.sensors.humidity;
-    const airQuality = appState.sensors.airQuality;
-    const energy = appState.sensors.energy;
-
-    if (message.includes("temperature") || message.includes("hot") || message.includes("cold")) {
-        if (temperature < 19) {
-            return `The indoor temperature is ${temperature} °C. It is a bit cold, so heating is recommended.`;
-        }
-
-        if (temperature > 27) {
-            return `The indoor temperature is ${temperature} °C. It is warm, so cooling is recommended.`;
-        }
-
-        return `The indoor temperature is ${temperature} °C. It is currently in a comfortable range.`;
-    }
-
-    if (message.includes("humidity")) {
-        if (humidity < 30) {
-            return `Humidity is ${humidity}%. The air may be too dry.`;
-        }
-
-        if (humidity > 70) {
-            return `Humidity is ${humidity}%. The air may be too humid.`;
-        }
-
-        return `Humidity is ${humidity}%. This is a normal indoor humidity level.`;
-    }
-
-    if (message.includes("air") || message.includes("quality")) {
-        if (airQuality < 50) {
-            return `Air quality is ${airQuality}%. The air purifier should be turned on.`;
-        }
-
-        return `Air quality is ${airQuality}%. The current air quality is acceptable.`;
-    }
-
-    if (message.includes("energy") || message.includes("power")) {
-        if (energy > 1200) {
-            return `Energy usage is ${energy} W. This is high, so the system should show an energy alert.`;
-        }
-
-        return `Energy usage is ${energy} W. The current energy usage is normal.`;
-    }
-
-    if (message.includes("help")) {
-        return "You can ask me about temperature, humidity, air quality, or energy usage.";
-    }
-
-    return "I am a demo smart home assistant. In the future, this chat box can be connected to a real AI API.";
+function getSensorContext() {
+    return {
+        temperature: appState.sensors.temperature,
+        humidity: appState.sensors.humidity,
+        airQuality: appState.sensors.airQuality,
+        energy: appState.sensors.energy,
+        heatingStatus: heatingStatus.textContent,
+        coolingStatus: coolingStatus.textContent,
+        airPurifierStatus: airPurifierStatus.textContent,
+        energyAlertStatus: energyAlertStatus.textContent
+    };
 }
 
-function sendChatMessage() {
+async function sendChatMessage() {
     const userMessage = chatInput.value.trim();
 
     if (userMessage === "") {
@@ -329,12 +287,53 @@ function sendChatMessage() {
     }
 
     addChatMessage("You", userMessage, "user");
-
-    const botReply = generateSmartHomeReply(userMessage);
-    addChatMessage("Assistant", botReply, "bot");
-
     chatInput.value = "";
-    addLog("Chat message sent.");
+
+    addChatMessage("Assistant", "Thinking...", "bot");
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: userMessage,
+                sensorContext: getSensorContext()
+            })
+        });
+
+        const data = await response.json();
+
+        const botMessages = document.querySelectorAll(".bot-message");
+        const lastBotMessage = botMessages[botMessages.length - 1];
+
+        if (!response.ok) {
+            lastBotMessage.innerHTML = `
+                <strong>Assistant:</strong>
+                <p>Sorry, the AI request failed.</p>
+            `;
+            addLog("AI chat request failed.");
+            return;
+        }
+
+        lastBotMessage.innerHTML = `
+            <strong>Assistant:</strong>
+            <p>${data.reply}</p>
+        `;
+
+        addLog("AI chat response received.");
+    } catch (error) {
+        const botMessages = document.querySelectorAll(".bot-message");
+        const lastBotMessage = botMessages[botMessages.length - 1];
+
+        lastBotMessage.innerHTML = `
+            <strong>Assistant:</strong>
+            <p>Could not connect to the AI server.</p>
+        `;
+
+        addLog("AI chat server connection failed.");
+    }
 }
 
 function setupTheme() {
