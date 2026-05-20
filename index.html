@@ -18,6 +18,7 @@
                 <a href="#dashboardSection">Dashboard</a>
                 <a href="#weatherSection">Weather API</a>
                 <a href="#automationSection">Automation</a>
+                <a href="#chatSection">AI Chat</a>
                 <a href="#eventLogSection">Event Log</a>
             </div>
 
@@ -53,7 +54,7 @@
                 <h1>Smart Home Monitoring System</h1>
                 <p>
                     A browser-based dashboard that simulates smart home sensor monitoring,
-                    automation rules, API-based data loading, and local user login.
+                    automation rules, API-based data loading, local user login and a smart assistant chat.
                 </p>
             </section>
 
@@ -135,6 +136,26 @@
 
                 <div id="weatherResult" class="weather-result">
                     <p>No weather data loaded yet.</p>
+                </div>
+            </section>
+
+            <section id="chatSection" class="card chat-card">
+                <h2>Smart Home Assistant Chat</h2>
+                <p class="muted">
+                    This chat box is prepared for future AI assistant integration.
+                    In this demo version, it gives rule-based answers based on the current sensor values.
+                </p>
+
+                <div id="chatMessages" class="chat-messages">
+                    <div class="chat-message bot-message">
+                        <strong>Assistant:</strong>
+                        <p>Hello! I can help you understand the smart home sensor values.</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-row">
+                    <input type="text" id="chatInput" placeholder="Ask about temperature, humidity, energy or air quality...">
+                    <button id="sendChatBtn">Send</button>
                 </div>
             </section>
 

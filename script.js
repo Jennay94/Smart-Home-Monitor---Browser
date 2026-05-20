@@ -1,4 +1,5 @@
 const appState = {
+    user: localStorage.getItem("smartHomeLoggedInUser") || null,
     sensors: {
         temperature: 22,
         humidity: 45,
@@ -21,61 +22,6 @@ const loginMessage = document.getElementById("loginMessage");
 const logoutBtn = document.getElementById("logoutBtn");
 const loggedInUserText = document.getElementById("loggedInUserText");
 
-let loggedInUser = localStorage.getItem("smartHomeLoggedInUser");
-
-function updateAuthView() {
-    if (loggedInUser) {
-        loginSection.classList.add("hidden");
-        dashboardSection.classList.remove("hidden");
-        loggedInUserText.textContent = loggedInUser;
-    } else {
-        loginSection.classList.remove("hidden");
-        dashboardSection.classList.add("hidden");
-    }
-}
-
-function loginUser() {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-
-    if (username === validUser.username && password === validUser.password) {
-        loggedInUser = username;
-        localStorage.setItem("smartHomeLoggedInUser", username);
-
-        loginMessage.textContent = "";
-        updateAuthView();
-
-        if (typeof addLog === "function") {
-            addLog(`${username} logged in successfully.`);
-        }
-    } else {
-        loginMessage.textContent = "Invalid username or password.";
-        loginMessage.style.color = "red";
-    }
-}
-
-function logoutUser() {
-    if (typeof addLog === "function") {
-        addLog(`${loggedInUser} logged out.`);
-    }
-
-    loggedInUser = null;
-    localStorage.removeItem("smartHomeLoggedInUser");
-    updateAuthView();
-}
-
-loginBtn.addEventListener("click", loginUser);
-
-passwordInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        loginUser();
-    }
-});
-
-logoutBtn.addEventListener("click", logoutUser);
-
-updateAuthView();
-
 const temperatureSlider = document.getElementById("temperatureSlider");
 const humiditySlider = document.getElementById("humiditySlider");
 const airQualitySlider = document.getElementById("airQualitySlider");
@@ -95,12 +41,69 @@ const loadSensorDataBtn = document.getElementById("loadSensorDataBtn");
 const runAutomationBtn = document.getElementById("runAutomationBtn");
 const eventLog = document.getElementById("eventLog");
 
+const cityInput = document.getElementById("cityInput");
+const weatherBtn = document.getElementById("weatherBtn");
+const weatherResult = document.getElementById("weatherResult");
+
+const chatMessages = document.getElementById("chatMessages");
+const chatInput = document.getElementById("chatInput");
+const sendChatBtn = document.getElementById("sendChatBtn");
+
+const themeToggle = document.getElementById("themeToggle");
+
 function addLog(message) {
     const listItem = document.createElement("li");
     const time = new Date().toLocaleTimeString();
 
     listItem.textContent = `[${time}] ${message}`;
     eventLog.prepend(listItem);
+}
+
+function updateAuthView() {
+    if (appState.user) {
+        loginSection.classList.add("hidden");
+        dashboardSection.classList.remove("hidden");
+        loggedInUserText.textContent = appState.user;
+    } else {
+        loginSection.classList.remove("hidden");
+        dashboardSection.classList.add("hidden");
+        loggedInUserText.textContent = "";
+    }
+}
+
+function loginUser() {
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (username === "" || password === "") {
+        loginMessage.textContent = "Please enter both username and password.";
+        loginMessage.style.color = "red";
+        return;
+    }
+
+    if (username === validUser.username && password === validUser.password) {
+        appState.user = username;
+        localStorage.setItem("smartHomeLoggedInUser", username);
+
+        usernameInput.value = "";
+        passwordInput.value = "";
+        loginMessage.textContent = "";
+
+        updateAuthView();
+        addLog(`${username} logged in successfully.`);
+    } else {
+        loginMessage.textContent = "Invalid username or password.";
+        loginMessage.style.color = "red";
+    }
+}
+
+function logoutUser() {
+    addLog(`${appState.user} logged out.`);
+
+    appState.user = null;
+    localStorage.removeItem("smartHomeLoggedInUser");
+
+    updateAuthView();
 }
 
 function updateSensorValues() {
@@ -114,6 +117,7 @@ function updateSensorValues() {
     airQualityValue.textContent = appState.sensors.airQuality;
     energyValue.textContent = appState.sensors.energy;
 }
+
 async function loadSensorDataFromApi() {
     try {
         const response = await fetch("sensor-data.json");
@@ -141,10 +145,7 @@ async function loadSensorDataFromApi() {
         addLog("Failed to load sensor data from API.");
     }
 }
-function setStatus(element, text, className) {
-    element.textContent = text;
-    element.className = `status ${className}`;
-}
+
 function setStatus(element, text, className) {
     element.textContent = text;
     element.className = `status ${className}`;
@@ -188,6 +189,176 @@ function runSmartHomeAutomation() {
     }
 }
 
+async function getCoordinates(city) {
+    const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`;
+
+    const response = await fetch(geocodingUrl);
+
+    if (!response.ok) {
+        throw new Error("Could not load city data.");
+    }
+
+    const data = await response.json();
+
+    if (!data.results || data.results.length === 0) {
+        throw new Error("City not found.");
+    }
+
+    return {
+        name: data.results[0].name,
+        country: data.results[0].country,
+        latitude: data.results[0].latitude,
+        longitude: data.results[0].longitude
+    };
+}
+
+async function getWeather() {
+    const city = cityInput.value.trim();
+
+    if (city.length === 0) {
+        weatherResult.innerHTML = "<p>Please enter a city name.</p>";
+        return;
+    }
+
+    weatherResult.innerHTML = "<p>Loading weather data...</p>";
+
+    try {
+        const location = await getCoordinates(city);
+
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${location.latitude}&longitude=${location.longitude}&current=temperature_2m,relative_humidity_2m,wind_speed_10m`;
+
+        const response = await fetch(weatherUrl);
+
+        if (!response.ok) {
+            throw new Error("Weather request failed.");
+        }
+
+        const data = await response.json();
+
+        weatherResult.innerHTML = `
+            <h3>${location.name}, ${location.country}</h3>
+            <p>Temperature: <strong>${data.current.temperature_2m} °C</strong></p>
+            <p>Humidity: <strong>${data.current.relative_humidity_2m} %</strong></p>
+            <p>Wind speed: <strong>${data.current.wind_speed_10m} km/h</strong></p>
+        `;
+
+        addLog(`Weather data loaded for ${location.name}.`);
+    } catch (error) {
+        weatherResult.innerHTML = `<p>${error.message}</p>`;
+        addLog("Weather API request failed.");
+    }
+}
+
+function addChatMessage(sender, message, type) {
+    const messageElement = document.createElement("div");
+    messageElement.className = `chat-message ${type}-message`;
+
+    messageElement.innerHTML = `
+        <strong>${sender}:</strong>
+        <p>${message}</p>
+    `;
+
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function generateSmartHomeReply(userMessage) {
+    const message = userMessage.toLowerCase();
+
+    const temperature = appState.sensors.temperature;
+    const humidity = appState.sensors.humidity;
+    const airQuality = appState.sensors.airQuality;
+    const energy = appState.sensors.energy;
+
+    if (message.includes("temperature") || message.includes("hot") || message.includes("cold")) {
+        if (temperature < 19) {
+            return `The indoor temperature is ${temperature} °C. It is a bit cold, so heating is recommended.`;
+        }
+
+        if (temperature > 27) {
+            return `The indoor temperature is ${temperature} °C. It is warm, so cooling is recommended.`;
+        }
+
+        return `The indoor temperature is ${temperature} °C. It is currently in a comfortable range.`;
+    }
+
+    if (message.includes("humidity")) {
+        if (humidity < 30) {
+            return `Humidity is ${humidity}%. The air may be too dry.`;
+        }
+
+        if (humidity > 70) {
+            return `Humidity is ${humidity}%. The air may be too humid.`;
+        }
+
+        return `Humidity is ${humidity}%. This is a normal indoor humidity level.`;
+    }
+
+    if (message.includes("air") || message.includes("quality")) {
+        if (airQuality < 50) {
+            return `Air quality is ${airQuality}%. The air purifier should be turned on.`;
+        }
+
+        return `Air quality is ${airQuality}%. The current air quality is acceptable.`;
+    }
+
+    if (message.includes("energy") || message.includes("power")) {
+        if (energy > 1200) {
+            return `Energy usage is ${energy} W. This is high, so the system should show an energy alert.`;
+        }
+
+        return `Energy usage is ${energy} W. The current energy usage is normal.`;
+    }
+
+    if (message.includes("help")) {
+        return "You can ask me about temperature, humidity, air quality, or energy usage.";
+    }
+
+    return "I am a demo smart home assistant. In the future, this chat box can be connected to a real AI API.";
+}
+
+function sendChatMessage() {
+    const userMessage = chatInput.value.trim();
+
+    if (userMessage === "") {
+        return;
+    }
+
+    addChatMessage("You", userMessage, "user");
+
+    const botReply = generateSmartHomeReply(userMessage);
+    addChatMessage("Assistant", botReply, "bot");
+
+    chatInput.value = "";
+    addLog("Chat message sent.");
+}
+
+function loadSavedTheme() {
+    const savedTheme = localStorage.getItem("smartHomeTheme");
+
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+    }
+}
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("smartHomeTheme", isDark ? "dark" : "light");
+
+    addLog("Theme changed.");
+});
+
+loginBtn.addEventListener("click", loginUser);
+logoutBtn.addEventListener("click", logoutUser);
+
+passwordInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        loginUser();
+    }
+});
+
 temperatureSlider.addEventListener("input", updateSensorValues);
 humiditySlider.addEventListener("input", updateSensorValues);
 airQualitySlider.addEventListener("input", updateSensorValues);
@@ -196,5 +367,20 @@ energySlider.addEventListener("input", updateSensorValues);
 loadSensorDataBtn.addEventListener("click", loadSensorDataFromApi);
 runAutomationBtn.addEventListener("click", runSmartHomeAutomation);
 
+weatherBtn.addEventListener("click", getWeather);
+
+sendChatBtn.addEventListener("click", sendChatMessage);
+
+chatInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        sendChatMessage();
+    }
+});
+
+loadSavedTheme();
+updateAuthView();
 updateSensorValues();
-addLog("Smart Home Monitoring System started.");
+
+if (appState.user) {
+    addLog("Smart Home Monitoring System started.");
+}
