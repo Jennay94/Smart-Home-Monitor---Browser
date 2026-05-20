@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { message, sensorContext } = req.body;
+    const { message, sensorContext } = req.body || {};
 
     if (!message || message.trim().length === 0) {
       return res.status(400).json({
@@ -24,20 +24,9 @@ export default async function handler(req, res) {
 
     const systemPrompt = `
 You are a helpful smart home assistant inside a browser-based Smart Home Monitoring System.
-
-You help the user understand:
-- indoor temperature
-- humidity
-- air quality
-- energy usage
-- heating status
-- cooling status
-- air purifier status
-- smart home device status
-
+You help the user understand indoor temperature, humidity, air quality, energy usage and smart device status.
 Use the provided sensor data when it is available.
 Keep answers short, practical and easy to understand.
-Do not mention that you are an AI model unless the user asks.
 `;
 
     const openRouterResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -45,7 +34,7 @@ Do not mention that you are an AI model unless the user asks.
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://vercel.com",
+        "HTTP-Referer": "https://smart-home-monitor-browser.vercel.app",
         "X-Title": "Smart Home Monitoring System"
       },
       body: JSON.stringify({
@@ -81,12 +70,7 @@ ${message}
     const data = await openRouterResponse.json();
 
     const reply =
-      data.choices &&
-      data.choices[0] &&
-      data.choices[0].message &&
-      data.choices[0].message.content
-        ? data.choices[0].message.content
-        : "No answer was generated.";
+      data.choices?.[0]?.message?.content || "No answer was generated.";
 
     return res.status(200).json({
       reply
