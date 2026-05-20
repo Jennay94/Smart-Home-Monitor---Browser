@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add Device | Smart Home Monitor</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header compact-header">
+    <nav class="navbar" aria-label="Main navigation">
+      <a class="logo" href="index.html" aria-label="Back to home">
+        <span class="logo-icon">🏠</span>
+        <span>Smart Home Monitor</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html#dashboardSection">Dashboard</a></li>
+        <li><a href="index.html#weatherSection">Weather API</a></li>
+        <li><a href="index.html#automationSection">Automation</a></li>
+
+        <li class="nav-dropdown">
+          <a class="dropdown-trigger" href="index.html#thingSpeakCharts">
+            Devices <span class="dropdown-arrow">⌄</span>
+          </a>
+
+          <ul class="dropdown-menu">
+            <li><a href="index.html#thingSpeakCharts">ThingSpeak Charts</a></li>
+            <li><a href="add-device.html">Add Device</a></li>
+            <li><a href="index.html#deviceListSection">Device List</a></li>
+          </ul>
+        </li>
+
+        <li><a href="index.html#chatSection">AI Chat</a></li>
+        <li><a href="index.html#eventLogSection">Event Log</a></li>
+      </ul>
+
+      <button class="theme-toggle" id="themeToggle" type="button">
+        Toggle theme
+      </button>
+    </nav>
+
+    <section class="hero add-device-hero">
+      <div>
+        <p class="eyebrow">Device management</p>
+        <h1>Add New Device</h1>
+        <p>
+          Add, edit or remove smart home devices. The data is saved locally in the browser with localStorage.
+        </p>
+      </div>
+
+      <article class="status-card">
+        <h2>Device Setup</h2>
+        <p>
+          This page simulates device registration. In a real system, this could be connected to a backend or ThingSpeak channel.
+        </p>
+      </article>
+    </section>
+  </header>
+
+  <main>
+    <section class="section split">
+      <div class="card">
+        <p class="eyebrow">New device</p>
+        <h2>Device details</h2>
+        <p class="muted">
+          Fill in the form to add a new smart home sensor or actuator.
+        </p>
+
+        <form class="device-form" id="deviceForm">
+          <input type="hidden" id="editIndex" value="" />
+
+          <label for="deviceName">Device name</label>
+          <input
+            id="deviceName"
+            type="text"
+            placeholder="Example: Living room temperature sensor"
+            required
+          />
+
+          <label for="deviceType">Device type</label>
+          <select id="deviceType" required>
+            <option value="">Select device type</option>
+            <option value="Temperature">Temperature</option>
+            <option value="Humidity">Humidity</option>
+            <option value="Soil Moisture">Soil Moisture</option>
+            <option value="Rain">Rain</option>
+            <option value="Fan">Fan</option>
+            <option value="Air Pressure">Air Pressure</option>
+            <option value="Light">Light</option>
+            <option value="Thermostat">Thermostat</option>
+            <option value="Security">Security</option>
+          </select>
+
+          <label for="thingSpeakField">ThingSpeak field number</label>
+          <input
+            id="thingSpeakField"
+            type="number"
+            min="1"
+            max="8"
+            placeholder="Example: 8"
+          />
+
+          <label for="deviceLocation">Location</label>
+          <input
+            id="deviceLocation"
+            type="text"
+            placeholder="Example: Living room"
+          />
+
+          <div class="button-row">
+            <button class="button primary" type="submit" id="saveDeviceBtn">
+              Save device
+            </button>
+
+            <button class="button secondary" type="button" id="cancelEditBtn">
+              Cancel edit
+            </button>
+
+            <a class="button secondary" href="index.html#thingSpeakCharts">
+              Back to dashboard
+            </a>
+          </div>
+
+          <p id="deviceMessage" class="message"></p>
+        </form>
+      </div>
+
+      <article class="card login-result">
+        <h3>Current devices</h3>
+        <p class="muted">
+          Saved devices are stored in localStorage.
+        </p>
+
+        <div id="deviceList" class="device-list">
+          <p>No devices added yet.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Created for Browser Programming course using HTML5, CSS3 and JavaScript.</p>
+  </footer>
+
+  <script src="add-device.js"></script>
+</body>
+</html>
