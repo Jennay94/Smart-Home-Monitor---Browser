@@ -32,6 +32,7 @@ const loggedInUserText = document.getElementById("loggedInUserText");
 const themeToggle = document.getElementById("themeToggle");
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.getElementById("navLinks");
+
 const elements = {
     themeToggle,
     menuToggle,
@@ -95,18 +96,26 @@ function addLog(message) {
 /* ===== Authentication ===== */
 
 function updateAuthView() {
+    if (!loginSection || !dashboardSection) {
+        return;
+    }
+
     if (appState.user) {
         loginSection.classList.add("hidden");
         dashboardSection.classList.remove("hidden");
 
-        loggedInUserText.textContent = appState.user;
+        if (loggedInUserText) {
+            loggedInUserText.textContent = appState.user;
+        }
 
         loadLatestThingSpeakHeroData();
     } else {
         loginSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
 
-        loggedInUserText.textContent = "";
+        if (loggedInUserText) {
+            loggedInUserText.textContent = "";
+        }
 
         showLockedThingSpeakHeroData();
     }
@@ -150,6 +159,19 @@ function logoutUser() {
 /* ===== Sensor dashboard ===== */
 
 function updateSensorValues() {
+    if (
+        !temperatureSlider ||
+        !humiditySlider ||
+        !airQualitySlider ||
+        !energySlider ||
+        !temperatureValue ||
+        !humidityValue ||
+        !airQualityValue ||
+        !energyValue
+    ) {
+        return;
+    }
+
     appState.sensors.temperature = Number(temperatureSlider.value);
     appState.sensors.humidity = Number(humiditySlider.value);
     appState.sensors.airQuality = Number(airQualitySlider.value);
@@ -176,10 +198,21 @@ async function loadSensorDataFromApi() {
         appState.sensors.airQuality = Number(data.airQuality);
         appState.sensors.energy = Number(data.energy);
 
-        temperatureSlider.value = appState.sensors.temperature;
-        humiditySlider.value = appState.sensors.humidity;
-        airQualitySlider.value = appState.sensors.airQuality;
-        energySlider.value = appState.sensors.energy;
+        if (temperatureSlider) {
+            temperatureSlider.value = appState.sensors.temperature;
+        }
+
+        if (humiditySlider) {
+            humiditySlider.value = appState.sensors.humidity;
+        }
+
+        if (airQualitySlider) {
+            airQualitySlider.value = appState.sensors.airQuality;
+        }
+
+        if (energySlider) {
+            energySlider.value = appState.sensors.energy;
+        }
 
         updateSensorValues();
 
@@ -199,13 +232,29 @@ function showLockedThingSpeakHeroData() {
     const heroFanStatus = document.getElementById("heroFanStatus");
     const heroLight = document.getElementById("heroLight");
 
-    systemStatus.textContent = "Nice try. The smart home secrets are hiding behind the login door.";
+    if (systemStatus) {
+        systemStatus.textContent = "Nice try. The smart home secrets are hiding behind the login door.";
+    }
 
-    heroTemperature.textContent = "Locked";
-    heroHumidity.textContent = "Locked";
-    heroAirPressure.textContent = "Locked";
-    heroFanStatus.textContent = "Locked";
-    heroLight.textContent = "Locked";
+    if (heroTemperature) {
+        heroTemperature.textContent = "Locked";
+    }
+
+    if (heroHumidity) {
+        heroHumidity.textContent = "Locked";
+    }
+
+    if (heroAirPressure) {
+        heroAirPressure.textContent = "Locked";
+    }
+
+    if (heroFanStatus) {
+        heroFanStatus.textContent = "Locked";
+    }
+
+    if (heroLight) {
+        heroLight.textContent = "Locked";
+    }
 }
 
 async function loadLatestThingSpeakHeroData() {
@@ -238,30 +287,45 @@ async function loadLatestThingSpeakHeroData() {
         const fan = Number(data.field5);
         const light = Number(data.field7);
 
-        heroTemperature.textContent = Number.isFinite(temperature)
-            ? `${temperature.toFixed(1)} °C`
-            : "-- °C";
+        if (heroTemperature) {
+            heroTemperature.textContent = Number.isFinite(temperature)
+                ? `${temperature.toFixed(1)} °C`
+                : "-- °C";
+        }
 
-        heroHumidity.textContent = Number.isFinite(humidity)
-            ? `${humidity.toFixed(0)} %`
-            : "-- %";
+        if (heroHumidity) {
+            heroHumidity.textContent = Number.isFinite(humidity)
+                ? `${humidity.toFixed(0)} %`
+                : "-- %";
+        }
 
-        heroAirPressure.textContent = Number.isFinite(airPressure)
-            ? `${airPressure.toFixed(1)} hPa`
-            : "--";
+        if (heroAirPressure) {
+            heroAirPressure.textContent = Number.isFinite(airPressure)
+                ? `${airPressure.toFixed(1)} hPa`
+                : "--";
+        }
 
-        heroFanStatus.textContent = fan === 1 ? "ON" : "OFF";
+        if (heroFanStatus) {
+            heroFanStatus.textContent = fan === 1 ? "ON" : "OFF";
+        }
 
-        heroLight.textContent = Number.isFinite(light)
-            ? `${light.toFixed(0)} lux`
-            : "--";
+        if (heroLight) {
+            heroLight.textContent = Number.isFinite(light)
+                ? `${light.toFixed(0)} lux`
+                : "--";
+        }
 
-        const entryDate = new Date(data.created_at).toLocaleString();
-        systemStatus.textContent = `Last sensor update: ${entryDate}`;
+        if (systemStatus) {
+            const entryDate = new Date(data.created_at).toLocaleString();
+            systemStatus.textContent = `Last sensor update: ${entryDate}`;
+        }
 
         addLog("Latest ThingSpeak sensor data loaded.");
     } catch (error) {
-        systemStatus.textContent = "ThingSpeak data could not be loaded.";
+        if (systemStatus) {
+            systemStatus.textContent = "ThingSpeak data could not be loaded.";
+        }
+
         addLog("Failed to load latest ThingSpeak sensor data.");
     }
 }
@@ -269,6 +333,10 @@ async function loadLatestThingSpeakHeroData() {
 /* ===== Automation ===== */
 
 function setStatus(element, text, className) {
+    if (!element) {
+        return;
+    }
+
     element.textContent = text;
     element.className = `status ${className}`;
 }
@@ -376,6 +444,10 @@ async function getWeather() {
 /* ===== AI Chat ===== */
 
 function addChatMessage(sender, message, type) {
+    if (!chatMessages) {
+        return;
+    }
+
     const messageElement = document.createElement("div");
     messageElement.className = `chat-message ${type}-message`;
 
@@ -394,10 +466,10 @@ function getSensorContext() {
         humidity: appState.sensors.humidity,
         airQuality: appState.sensors.airQuality,
         energy: appState.sensors.energy,
-        heatingStatus: heatingStatus.textContent,
-        coolingStatus: coolingStatus.textContent,
-        airPurifierStatus: airPurifierStatus.textContent,
-        energyAlertStatus: energyAlertStatus.textContent
+        heatingStatus: heatingStatus ? heatingStatus.textContent : "OFF",
+        coolingStatus: coolingStatus ? coolingStatus.textContent : "OFF",
+        airPurifierStatus: airPurifierStatus ? airPurifierStatus.textContent : "OFF",
+        energyAlertStatus: energyAlertStatus ? energyAlertStatus.textContent : "NORMAL"
     };
 }
 
@@ -449,10 +521,12 @@ async function sendChatMessage() {
         const botMessages = document.querySelectorAll(".bot-message");
         const lastBotMessage = botMessages[botMessages.length - 1];
 
-        lastBotMessage.innerHTML = `
-            <strong>Assistant:</strong>
-            <p>Could not connect to the AI server.</p>
-        `;
+        if (lastBotMessage) {
+            lastBotMessage.innerHTML = `
+                <strong>Assistant:</strong>
+                <p>Could not connect to the AI server.</p>
+            `;
+        }
 
         addLog("AI chat server connection failed.");
     }
@@ -461,15 +535,19 @@ async function sendChatMessage() {
 /* ===== Devices ===== */
 
 function renderDeviceList() {
+    if (!deviceList) {
+        return;
+    }
+
     deviceList.innerHTML = "";
 
     if (appState.devices.length === 0) {
-        deviceList.innerHTML = "<p>No devices added yet.</p>";
+        deviceList.innerHTML = "<li>No devices added yet.</li>";
         return;
     }
 
     appState.devices.forEach((device) => {
-        const item = document.createElement("div");
+        const item = document.createElement("li");
         item.className = "device-list-item";
 
         item.innerHTML = `
@@ -538,6 +616,15 @@ function setupNavigation() {
     menuToggle.addEventListener("click", () => {
         const isOpen = navLinks.classList.toggle("open");
         menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    const navItems = navLinks.querySelectorAll("a");
+
+    navItems.forEach((item) => {
+        item.addEventListener("click", () => {
+            navLinks.classList.remove("open");
+            menuToggle.setAttribute("aria-expanded", "false");
+        });
     });
 }
 

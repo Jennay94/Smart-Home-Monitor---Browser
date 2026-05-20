@@ -23,13 +23,16 @@
                 <li><a href="#weatherSection">Weather API</a></li>
                 <li><a href="#automationSection">Automation</a></li>
                 <li><a href="#chatSection">AI Chat</a></li>
+
                 <li class="dropdown">
-                  <button class="dropdown-toggle" type="button">Devices ▾</button>
-                  <ul class="dropdown-menu">
-                    <li><a href="#thingspeak">ThingSpeak Charts</a></li>
-                    <li><a href="add-device.html">Add Device</a></li>
-                  </ul>
+                    <a class="dropdown-toggle" href="#thingspeak">Devices ▾</a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="#thingspeak">ThingSpeak Charts</a></li>
+                        <li><a href="add-device.html">Add Device</a></li>
+                    </ul>
                 </li>
+
                 <li><a href="#eventLogSection">Event Log</a></li>
             </ul>
 
@@ -46,6 +49,7 @@
                     A browser-based dashboard that simulates smart home sensor monitoring,
                     automation rules, API-based data loading and assistant chat features.
                 </p>
+
                 <div class="hero-actions">
                     <a class="button primary" href="#dashboardSection">Open dashboard</a>
                     <a class="button secondary" href="#weatherSection">Fetch weather</a>
@@ -212,98 +216,80 @@
             </section>
 
             <section class="section" id="thingspeak">
-                <section id="addDeviceSection" class="card add-device-card">
-    <h2>Add Device</h2>
-    <p class="muted">
-        Add a new smart home device to the monitoring dashboard.
-        This demo stores the device only in the browser state.
-    </p>
+                <section id="addedDevicesSection" class="card add-device-card">
+                    <h2>Added Devices</h2>
+                    <p class="muted">
+                        These are the smart home devices currently saved in the browser.
+                        To add a new device, open the Add Device page.
+                    </p>
 
-    <form id="addDeviceForm" class="add-device-form">
-        <label for="deviceNameInput">Device name</label>
-        <input 
-            type="text" 
-            id="deviceNameInput" 
-            placeholder="Example: Living room fan"
-        >
+                    <div class="device-list-wrapper">
+                        <ul id="deviceList" class="device-list">
+                            <li>No devices added yet.</li>
+                        </ul>
+                    </div>
 
-        <label for="deviceTypeInput">Device type</label>
-        <select id="deviceTypeInput">
-            <option value="Fan">Fan</option>
-            <option value="Light">Light</option>
-            <option value="Sensor">Sensor</option>
-            <option value="Air purifier">Air purifier</option>
-            <option value="Other">Other</option>
-        </select>
+                    <a class="button primary" href="add-device.html">Add new device</a>
+                </section>
 
-        <button type="submit">Add Device</button>
-    </form>
+                <div class="section-heading">
+                    <p class="eyebrow">ThingSpeak API</p>
+                    <h2>Historical Sensor Charts</h2>
+                    <p>
+                        These charts show real historical sensor data from a public ThingSpeak channel.
+                        The data was originally collected by an ESP32-based sensor system.
+                    </p>
+                </div>
 
-    <div class="device-list-wrapper">
-        <h3>Added Devices</h3>
-        <ul id="deviceList" class="device-list">
-            <li>No devices added yet.</li>
-        </ul>
-    </div>
-</section>
-              <div class="section-heading">
-                <p class="eyebrow">ThingSpeak API</p>
-                <h2>Historical Sensor Charts</h2>
-                <p>
-                  These charts show real historical sensor data from a public ThingSpeak channel.
-                  The data was originally collected by an ESP32-based sensor system.
-                </p>
-              </div>
+                <div class="chart-grid">
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/1?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Temperature&width=auto&height=200"
+                        title="Temperature chart">
+                    </iframe>
 
-              <div class="chart-grid">
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/1?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Temperature&width=auto&height=200"
-                  title="Temperature chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/2?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Humidity&width=auto&height=200"
+                        title="Humidity chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/2?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Humidity&width=auto&height=200"
-                  title="Humidity chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/3?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Soil%20Moisture&width=auto&height=200"
+                        title="Soil moisture chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/3?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Soil%20Moisture&width=auto&height=200"
-                  title="Soil moisture chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/4?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Rain&width=auto&height=200"
+                        title="Rain chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/4?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Rain&width=auto&height=200"
-                  title="Rain chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/5?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Fan&width=auto&height=200"
+                        title="Fan chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/5?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Fan&width=auto&height=200"
-                  title="Fan chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/6?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Air%20Pressure&width=auto&height=200"
+                        title="Air pressure chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/6?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Air%20Pressure&width=auto&height=200"
-                  title="Air pressure chart">
-                </iframe>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/7?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Light&width=auto&height=200"
+                        title="Light chart">
+                    </iframe>
 
-                <iframe
-                  class="thingspeak-chart"
-                  src="https://thingspeak.com/channels/3156213/charts/7?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Light&width=auto&height=200"
-                  title="Light chart">
-                </iframe>
-
-                <a class="add-chart-card" href="add-device.html">
-                  <span class="add-chart-icon">+</span>
-                  <h3>Add new device</h3>
-                  <p>Connect a new sensor or create a new chart for the dashboard.</p>
-                </a>
-              </div>
+                    <a class="add-chart-card" href="add-device.html">
+                        <span class="add-chart-icon">+</span>
+                        <h3>Add new device</h3>
+                        <p>Connect a new sensor or create a new chart for the dashboard.</p>
+                    </a>
+                </div>
             </section>
 
             <section id="eventLogSection" class="card">
