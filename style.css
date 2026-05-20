@@ -769,3 +769,140 @@ body.dark .thingspeak-chart {
 .saved-device p {
   margin: 0.3rem 0;
 }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  padding: 0;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.dropdown-toggle:hover {
+  color: var(--primary);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.8rem);
+  right: 0;
+  min-width: 190px;
+  padding: 0.6rem;
+  margin: 0;
+  list-style: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+  display: none;
+  z-index: 30;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.8rem;
+  color: var(--text);
+}
+
+.dropdown-menu a:hover {
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+}
+
+@media (max-width: 900px) {
+  .dropdown-menu {
+    position: static;
+    box-shadow: none;
+    margin-top: 0.5rem;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: grid;
+  }
+}
+
+.compact-header {
+  min-height: auto;
+}
+
+.add-device-hero {
+  margin-top: 3rem;
+  padding-bottom: 2rem;
+}
+
+.device-form {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.device-form input,
+.device-form select {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+}
+
+.device-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.saved-device {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--bg);
+}
+
+.saved-device h4 {
+  margin: 0 0 0.5rem;
+}
+
+.saved-device p {
+  margin: 0.25rem 0;
+}
+
+.device-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.danger-small {
+  background: var(--danger);
+  color: #ffffff;
+}
+
+.danger-small:hover {
+  background: #991b1b;
+}
+
+@media (max-width: 700px) {
+  .saved-device {
+    flex-direction: column;
+  }
+
+  .device-actions {
+    flex-direction: row;
+  }
+}
