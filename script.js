@@ -1,5 +1,8 @@
 const appState = {
     user: localStorage.getItem("smartHomeLoggedInUser") || null,
+    devices: JSON.parse(localStorage.getItem("smartHomeDevices")) || [
+        { name: "Living Room Light", type: "Light" }
+    ],
     sensors: {
         temperature: 22,
         humidity: 45,
@@ -13,6 +16,8 @@ const validUser = {
     password: "smart123"
 };
 
+/* ===== Login elements ===== */
+
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
 const usernameInput = document.getElementById("usernameInput");
@@ -21,6 +26,25 @@ const loginBtn = document.getElementById("loginBtn");
 const loginMessage = document.getElementById("loginMessage");
 const logoutBtn = document.getElementById("logoutBtn");
 const loggedInUserText = document.getElementById("loggedInUserText");
+
+/* ===== Navbar elements ===== */
+
+const themeToggle = document.getElementById("themeToggle");
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+const devicesNavLink = document.getElementById("devicesNavLink");
+
+const navAuthBox = document.getElementById("navAuthBox");
+const navLoggedInUserText = document.getElementById("navLoggedInUserText");
+const navLogoutBtn = document.getElementById("navLogoutBtn");
+
+const elements = {
+    themeToggle,
+    menuToggle,
+    navLinks
+};
+
+/* ===== Sensor elements ===== */
 
 const temperatureSlider = document.getElementById("temperatureSlider");
 const humiditySlider = document.getElementById("humiditySlider");
@@ -41,21 +65,32 @@ const loadSensorDataBtn = document.getElementById("loadSensorDataBtn");
 const runAutomationBtn = document.getElementById("runAutomationBtn");
 const eventLog = document.getElementById("eventLog");
 
+/* ===== Weather elements ===== */
+
 const cityInput = document.getElementById("cityInput");
 const weatherBtn = document.getElementById("weatherBtn");
 const weatherResult = document.getElementById("weatherResult");
+
+/* ===== Chat elements ===== */
 
 const chatMessages = document.getElementById("chatMessages");
 const chatInput = document.getElementById("chatInput");
 const sendChatBtn = document.getElementById("sendChatBtn");
 
-const themeToggle = document.getElementById("themeToggle");
-const menuToggle = document.getElementById("menuToggle");
-const navLinks = document.getElementById("navLinks");
-const mainHeader = document.querySelector(".site-header");
-const elements = { themeToggle, menuToggle, navLinks };
+/* ===== Device form/list elements ===== */
+
+const addDeviceForm = document.getElementById("addDeviceForm");
+const deviceNameInput = document.getElementById("deviceNameInput");
+const deviceTypeInput = document.getElementById("deviceTypeInput");
+const deviceList = document.getElementById("deviceList");
+
+/* ===== General log ===== */
 
 function addLog(message) {
+    if (!eventLog) {
+        return;
+    }
+
     const listItem = document.createElement("li");
     const time = new Date().toLocaleTimeString();
 
@@ -63,15 +98,29 @@ function addLog(message) {
     eventLog.prepend(listItem);
 }
 
+/* ===== Authentication ===== */
+
 function updateAuthView() {
     if (appState.user) {
         loginSection.classList.add("hidden");
         dashboardSection.classList.remove("hidden");
+
         loggedInUserText.textContent = appState.user;
+
+        navAuthBox.classList.remove("hidden");
+        navLoggedInUserText.textContent = appState.user;
+
+        loadLatestThingSpeakHeroData();
     } else {
         loginSection.classList.remove("hidden");
         dashboardSection.classList.add("hidden");
+
         loggedInUserText.textContent = "";
+
+        navAuthBox.classList.add("hidden");
+        navLoggedInUserText.textContent = "";
+
+        showLockedThingSpeakHeroData();
     }
 }
 
@@ -109,6 +158,8 @@ function logoutUser() {
 
     updateAuthView();
 }
+
+/* ===== Sensor dashboard ===== */
 
 function updateSensorValues() {
     appState.sensors.temperature = Number(temperatureSlider.value);
@@ -150,36 +201,84 @@ async function loadSensorDataFromApi() {
     }
 }
 
-async function loadLatestThingSpeakData() {
-  const url = "https://api.thingspeak.com/channels/3156213/feeds/last.json";
+/* ===== ThingSpeak latest data ===== */
 
-  try {
-    const response = await fetch(url);
+function showLockedThingSpeakHeroData() {
+    const systemStatus = document.getElementById("systemStatus");
+    const heroTemperature = document.getElementById("heroTemperature");
+    const heroHumidity = document.getElementById("heroHumidity");
+    const heroAirPressure = document.getElementById("heroAirPressure");
+    const heroFanStatus = document.getElementById("heroFanStatus");
+    const heroLight = document.getElementById("heroLight");
 
-    if (!response.ok) {
-      throw new Error("Could not load latest ThingSpeak data.");
+    systemStatus.textContent = "Nice try. The smart home secrets are hiding behind the login door.";
+
+    heroTemperature.textContent = "Locked";
+    heroHumidity.textContent = "Locked";
+    heroAirPressure.textContent = "Locked";
+    heroFanStatus.textContent = "Locked";
+    heroLight.textContent = "Locked";
+}
+
+async function loadLatestThingSpeakHeroData() {
+    if (!appState.user) {
+        showLockedThingSpeakHeroData();
+        return;
     }
 
-    const data = await response.json();
+    const url = "https://api.thingspeak.com/channels/3156213/feeds/last.json";
 
-    const latestData = {
-      temperature: Number(data.field1),
-      humidity: Number(data.field2),
-      soilMoisture: Number(data.field3),
-      rain: Number(data.field4),
-      fan: Number(data.field5),
-      airPressure: Number(data.field6),
-      light: Number(data.field7)
-    };
+    const systemStatus = document.getElementById("systemStatus");
+    const heroTemperature = document.getElementById("heroTemperature");
+    const heroHumidity = document.getElementById("heroHumidity");
+    const heroAirPressure = document.getElementById("heroAirPressure");
+    const heroFanStatus = document.getElementById("heroFanStatus");
+    const heroLight = document.getElementById("heroLight");
 
-    console.log("Latest ThingSpeak data:", latestData);
+    try {
+        const response = await fetch(url);
 
-    addLog("Latest ThingSpeak sensor data loaded from API.");
-  } catch (error) {
-    console.error(error);
-    addLog("Failed to load ThingSpeak sensor data.");
-  }
+        if (!response.ok) {
+            throw new Error("Could not load ThingSpeak data.");
+        }
+
+        const data = await response.json();
+
+        const temperature = Number(data.field1);
+        const humidity = Number(data.field2);
+        const airPressure = Number(data.field6);
+        const fan = Number(data.field5);
+        const light = Number(data.field7);
+
+        heroTemperature.textContent = Number.isFinite(temperature)
+            ? `${temperature.toFixed(1)} °C`
+            : "-- °C";
+
+        heroHumidity.textContent = Number.isFinite(humidity)
+            ? `${humidity.toFixed(0)} %`
+            : "-- %";
+
+        heroAirPressure.textContent = Number.isFinite(airPressure)
+            ? `${airPressure.toFixed(1)} hPa`
+            : "--";
+
+        heroFanStatus.textContent = fan === 1 ? "ON" : "OFF";
+
+        heroLight.textContent = Number.isFinite(light)
+            ? `${light.toFixed(0)} lux`
+            : "--";
+
+        const entryDate = new Date(data.created_at).toLocaleString();
+        systemStatus.textContent = `Last sensor update: ${entryDate}`;
+
+        addLog("Latest ThingSpeak sensor data loaded.");
+    } catch (error) {
+        systemStatus.textContent = "ThingSpeak data could not be loaded.";
+        addLog("Failed to load latest ThingSpeak sensor data.");
+    }
 }
+
+/* ===== Automation ===== */
 
 function setStatus(element, text, className) {
     element.textContent = text;
@@ -223,6 +322,8 @@ function runSmartHomeAutomation() {
         addLog("Energy usage is normal.");
     }
 }
+
+/* ===== Weather API ===== */
 
 async function getCoordinates(city) {
     const geocodingUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`;
@@ -284,64 +385,7 @@ async function getWeather() {
     }
 }
 
-async function loadLatestThingSpeakHeroData() {
-  const url = "https://api.thingspeak.com/channels/3156213/feeds/last.json";
-
-  const systemStatus = document.getElementById("systemStatus");
-  const heroTemperature = document.getElementById("heroTemperature");
-  const heroHumidity = document.getElementById("heroHumidity");
-  const heroAirPressure = document.getElementById("heroAirPressure");
-  const heroFanStatus = document.getElementById("heroFanStatus");
-  const heroLight = document.getElementById("heroLight");
-
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Could not load ThingSpeak data.");
-    }
-
-    const data = await response.json();
-
-    const temperature = Number(data.field1);
-    const humidity = Number(data.field2);
-    const airPressure = Number(data.field6);
-    const fan = Number(data.field5);
-    const light = Number(data.field7);
-
-    heroTemperature.textContent = Number.isFinite(temperature)
-      ? `${temperature.toFixed(1)} °C`
-      : "-- °C";
-
-    heroHumidity.textContent = Number.isFinite(humidity)
-      ? `${humidity.toFixed(0)} %`
-      : "-- %";
-
-    heroAirPressure.textContent = Number.isFinite(airPressure)
-      ? `${airPressure.toFixed(1)} hPa`
-      : "--";
-
-    heroFanStatus.textContent = fan === 1 ? "ON" : "OFF";
-
-    heroLight.textContent = Number.isFinite(light)
-      ? `${light.toFixed(0)} lux`
-      : "--";
-
-    const entryDate = new Date(data.created_at).toLocaleString();
-
-    systemStatus.textContent = `Last sensor update: ${entryDate}`;
-
-    if (typeof addLog === "function") {
-      addLog("Latest ThingSpeak sensor data loaded.");
-    }
-  } catch (error) {
-    systemStatus.textContent = "ThingSpeak data could not be loaded.";
-
-    if (typeof addLog === "function") {
-      addLog("Failed to load latest ThingSpeak sensor data.");
-    }
-  }
-}
+/* ===== AI Chat ===== */
 
 function addChatMessage(sender, message, type) {
     const messageElement = document.createElement("div");
@@ -426,28 +470,95 @@ async function sendChatMessage() {
     }
 }
 
-function setupTheme() {
-  const storedTheme = localStorage.getItem("smart-home-theme");
+/* ===== Devices ===== */
 
-  if (storedTheme === "dark") {
-    document.body.classList.add("dark");
-  }
+function renderDeviceList() {
+    deviceList.innerHTML = "";
 
-  elements.themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
+    if (appState.devices.length === 0) {
+        deviceList.innerHTML = "<p>No devices added yet.</p>";
+        return;
+    }
 
-    const theme = document.body.classList.contains("dark") ? "dark" : "light";
-    localStorage.setItem("smart-home-theme", theme);
-  });
+    appState.devices.forEach((device) => {
+        const item = document.createElement("div");
+        item.className = "device-list-item";
+
+        item.innerHTML = `
+            <div>
+                <strong>${device.name}</strong>
+                <span>${device.type}</span>
+            </div>
+            <span>Active</span>
+        `;
+
+        deviceList.appendChild(item);
+    });
 }
 
+function addDevice(event) {
+    event.preventDefault();
+
+    const name = deviceNameInput.value.trim();
+    const type = deviceTypeInput.value;
+
+    if (name === "") {
+        addLog("Device name is required.");
+        return;
+    }
+
+    appState.devices.push({
+        name,
+        type
+    });
+
+    localStorage.setItem("smartHomeDevices", JSON.stringify(appState.devices));
+
+    deviceNameInput.value = "";
+    deviceTypeInput.value = "Light";
+
+    renderDeviceList();
+    addLog(`New device added: ${name}.`);
+}
+
+/* ===== Theme / Navigation ===== */
+
+function setupTheme() {
+    const storedTheme = localStorage.getItem("smart-home-theme");
+
+    if (storedTheme === "dark") {
+        document.body.classList.add("dark");
+    }
+
+    elements.themeToggle.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+
+        const theme = document.body.classList.contains("dark") ? "dark" : "light";
+        localStorage.setItem("smart-home-theme", theme);
+    });
+}
 
 function setupNavigation() {
     menuToggle.addEventListener("click", () => {
         const isOpen = navLinks.classList.toggle("open");
         menuToggle.setAttribute("aria-expanded", String(isOpen));
     });
+
+    devicesNavLink.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const chartsSection = document.getElementById("thingSpeakCharts");
+
+        if (chartsSection) {
+            chartsSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+    });
 }
+
+/* ===== Init ===== */
 
 function init() {
     setupTheme();
@@ -455,6 +566,7 @@ function init() {
 
     loginBtn.addEventListener("click", loginUser);
     logoutBtn.addEventListener("click", logoutUser);
+    navLogoutBtn.addEventListener("click", logoutUser);
 
     passwordInput.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
@@ -480,14 +592,15 @@ function init() {
         }
     });
 
+    addDeviceForm.addEventListener("submit", addDevice);
+
     updateAuthView();
     updateSensorValues();
+    renderDeviceList();
 
     if (appState.user) {
         addLog("Smart Home Monitoring System started.");
     }
-
-    loadLatestThingSpeakHeroData();
 }
 
 init();
