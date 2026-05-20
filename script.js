@@ -50,7 +50,9 @@ const chatInput = document.getElementById("chatInput");
 const sendChatBtn = document.getElementById("sendChatBtn");
 
 const themeToggle = document.getElementById("themeToggle");
-const mainHeader = document.querySelector(".main-header");
+const menuToggle = document.getElementById("menuToggle");
+const navLinks = document.getElementById("navLinks");
+const mainHeader = document.querySelector(".site-header");
 
 function addLog(message) {
     const listItem = document.createElement("li");
@@ -351,13 +353,9 @@ themeToggle.addEventListener("click", () => {
     addLog("Theme changed.");
 });
 
-themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("dark");
-
-    const isDark = document.body.classList.contains("dark");
-    localStorage.setItem("smartHomeTheme", isDark ? "dark" : "light");
-
-    addLog("Theme changed.");
+menuToggle.addEventListener("click", () => {
+    const isOpen = navLinks.classList.toggle("open");
+    menuToggle.setAttribute("aria-expanded", String(isOpen));
 });
 
 loginBtn.addEventListener("click", loginUser);

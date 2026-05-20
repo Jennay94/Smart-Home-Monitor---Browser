@@ -7,23 +7,61 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="main-header">
-        <nav class="navbar">
-            <div class="brand">
-                <span class="brand-icon">🏠</span>
-                <span class="brand-name">Smart Home Monitor</span>
-            </div>
+    <header class="site-header">
+        <nav class="navbar" aria-label="Main navigation">
+            <a class="logo" href="#home" aria-label="Smart Home Monitor home">
+                <span class="logo-icon">🏠</span>
+                <span>Smart Home Monitor</span>
+            </a>
 
-            <div class="nav-links">
-                <a href="#dashboardSection">Dashboard</a>
-                <a href="#weatherSection">Weather API</a>
-                <a href="#automationSection">Automation</a>
-                <a href="#chatSection">AI Chat</a>
-                <a href="#eventLogSection">Event Log</a>
-            </div>
+            <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+                ☰
+            </button>
 
-            <button id="themeToggle" class="theme-btn">Toggle theme</button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#dashboardSection">Dashboard</a></li>
+                <li><a href="#weatherSection">Weather API</a></li>
+                <li><a href="#automationSection">Automation</a></li>
+                <li><a href="#chatSection">AI Chat</a></li>
+                <li><a href="#eventLogSection">Event Log</a></li>
+            </ul>
+
+            <button class="theme-toggle" id="themeToggle" type="button">
+                Toggle theme
+            </button>
         </nav>
+
+        <section class="hero" id="home">
+            <div>
+                <p class="eyebrow">Browser Programming Assignment</p>
+                <h1>Smart Home Monitoring System</h1>
+                <p>
+                    A browser-based dashboard that simulates smart home sensor monitoring,
+                    automation rules, API-based data loading and assistant chat features.
+                </p>
+                <div class="hero-actions">
+                    <a class="button primary" href="#dashboardSection">Open dashboard</a>
+                    <a class="button secondary" href="#weatherSection">Fetch weather</a>
+                </div>
+            </div>
+
+            <article class="status-card" aria-label="Current smart home summary">
+                <h2>System Status</h2>
+                <p id="systemStatus">Waiting for sensor data...</p>
+                <div class="status-row">
+                    <span>Heating</span>
+                    <strong id="heroHeatingStatus">OFF</strong>
+                </div>
+                <div class="status-row">
+                    <span>Cooling</span>
+                    <strong id="heroCoolingStatus">OFF</strong>
+                </div>
+                <div class="status-row">
+                    <span>Air purifier</span>
+                    <strong id="heroAirStatus">OFF</strong>
+                </div>
+            </article>
+        </section>
     </header>
 
     <main>
