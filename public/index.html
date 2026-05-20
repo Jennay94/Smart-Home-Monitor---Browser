@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Home Monitoring System</title>
     <link rel="stylesheet" href="style.css">
-
-    <!-- Chart.js for custom ThingSpeak charts -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header class="site-header">
@@ -17,30 +14,22 @@
                 <span>Smart Home Monitor</span>
             </a>
 
-            <div id="navAuthBox" class="nav-auth hidden">
-                <span>Logged in as <strong id="navLoggedInUserText">admin</strong></span>
-                <button id="navLogoutBtn" class="nav-logout-btn" type="button">Logout</button>
-            </div>
-
             <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
                 ☰
             </button>
 
             <ul class="nav-links" id="navLinks">
-                <li><a href="#dashboardSection" id="dashboardNavLink">Dashboard</a></li>
+                <li><a href="#dashboardSection">Dashboard</a></li>
                 <li><a href="#weatherSection">Weather API</a></li>
                 <li><a href="#automationSection">Automation</a></li>
                 <li><a href="#chatSection">AI Chat</a></li>
 
-                <li class="nav-dropdown">
-                    <a href="#thingSpeakCharts" id="devicesNavLink" class="dropdown-trigger">
-                        Devices <span class="dropdown-arrow">⌄</span>
-                    </a>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" href="#thingspeak">Devices ▾</a>
 
                     <ul class="dropdown-menu">
-                        <li><a href="#thingSpeakCharts" id="thingSpeakChartsLink">ThingSpeak Charts</a></li>
-                        <li><a href="#addDeviceSection" id="addDeviceNavLink">Add Device</a></li>
-                        <li><a href="#deviceListSection" id="deviceListNavLink">Device List</a></li>
+                        <li><a href="#thingspeak">ThingSpeak Charts</a></li>
+                        <li><a href="add-device.html">Add Device</a></li>
                     </ul>
                 </li>
 
@@ -131,7 +120,7 @@
                 </p>
             </section>
 
-            <div class="dashboard-topbar hidden">
+            <div class="dashboard-topbar">
                 <p>Logged in as <strong id="loggedInUserText">admin</strong></p>
                 <button id="logoutBtn" class="danger-btn">Logout</button>
             </div>
@@ -226,7 +215,23 @@
                 </div>
             </section>
 
-            <section class="section page-view" id="thingSpeakCharts">
+            <section class="section" id="thingspeak">
+                <section id="addedDevicesSection" class="card add-device-card">
+                    <h2>Added Devices</h2>
+                    <p class="muted">
+                        These are the smart home devices currently saved in the browser.
+                        To add a new device, open the Add Device page.
+                    </p>
+
+                    <div class="device-list-wrapper">
+                        <ul id="deviceList" class="device-list">
+                            <li>No devices added yet.</li>
+                        </ul>
+                    </div>
+
+                    <a class="button primary" href="add-device.html">Add new device</a>
+                </section>
+
                 <div class="section-heading">
                     <p class="eyebrow">ThingSpeak API</p>
                     <h2>Historical Sensor Charts</h2>
@@ -237,72 +242,54 @@
                 </div>
 
                 <div class="chart-grid">
-                    <div class="chart-frame">
-                        <canvas id="temperatureChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/1?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Temperature&width=auto&height=200"
+                        title="Temperature chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="humidityChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/2?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Humidity&width=auto&height=200"
+                        title="Humidity chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="soilMoistureChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/3?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Soil%20Moisture&width=auto&height=200"
+                        title="Soil moisture chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="rainChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/4?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Rain&width=auto&height=200"
+                        title="Rain chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="fanChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/5?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Fan&width=auto&height=200"
+                        title="Fan chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="airPressureChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/6?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Air%20Pressure&width=auto&height=200"
+                        title="Air pressure chart">
+                    </iframe>
 
-                    <div class="chart-frame">
-                        <canvas id="lightChart"></canvas>
-                    </div>
+                    <iframe
+                        class="thingspeak-chart"
+                        src="https://thingspeak.com/channels/3156213/charts/7?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Light&width=auto&height=200"
+                        title="Light chart">
+                    </iframe>
 
-                    <button class="add-device-card" id="openAddDeviceCard" type="button">
-                        <span class="add-device-icon">+</span>
-                        <strong>Add new device</strong>
-                        <span>Connect a new smart home device to the dashboard.</span>
-                    </button>
+                    <a class="add-chart-card" href="add-device.html">
+                        <span class="add-chart-icon">+</span>
+                        <h3>Add new device</h3>
+                        <p>Connect a new sensor or create a new chart for the dashboard.</p>
+                    </a>
                 </div>
-            </section>
-
-            <section id="addDeviceSection" class="card page-view hidden">
-                <h2>Add Device</h2>
-                <p class="muted">
-                    Add a new smart home device. New devices will appear only in the device list, not in the navigation menu.
-                </p>
-
-                <form id="addDeviceForm" class="add-device-form">
-                    <label for="deviceNameInput">Device name</label>
-                    <input type="text" id="deviceNameInput" placeholder="Example: Bedroom Light">
-
-                    <label for="deviceTypeInput">Device type</label>
-                    <select id="deviceTypeInput">
-                        <option value="Light">Light</option>
-                        <option value="Fan">Fan</option>
-                        <option value="Sensor">Sensor</option>
-                        <option value="Thermostat">Thermostat</option>
-                        <option value="Security">Security</option>
-                    </select>
-
-                    <button type="submit">Add Device</button>
-                </form>
-            </section>
-
-            <section id="deviceListSection" class="card page-view hidden">
-                <h2>Device List</h2>
-                <p class="muted">
-                    Devices added by the user are displayed here. They are saved in localStorage.
-                </p>
-
-                <div id="deviceList" class="device-list"></div>
             </section>
 
             <section id="eventLogSection" class="card">
