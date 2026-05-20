@@ -46,20 +46,33 @@
                 </div>
             </div>
 
-            <article class="status-card" aria-label="Current smart home summary">
-                <h2>System Status</h2>
-                <p id="systemStatus">Waiting for sensor data...</p>
+            <article class="status-card" aria-label="Latest ThingSpeak sensor data">
+                <h2>Latest ThingSpeak Data</h2>
+                <p id="systemStatus">Loading sensor data...</p>
+
                 <div class="status-row">
-                    <span>Heating</span>
-                    <strong id="heroHeatingStatus">OFF</strong>
+                    <span>Temperature</span>
+                    <strong id="heroTemperature">-- °C</strong>
                 </div>
+
                 <div class="status-row">
-                    <span>Cooling</span>
-                    <strong id="heroCoolingStatus">OFF</strong>
+                    <span>Humidity</span>
+                    <strong id="heroHumidity">-- %</strong>
                 </div>
+
                 <div class="status-row">
-                    <span>Air purifier</span>
-                    <strong id="heroAirStatus">OFF</strong>
+                    <span>Air pressure</span>
+                    <strong id="heroAirPressure">--</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>Fan</span>
+                    <strong id="heroFanStatus">--</strong>
+                </div>
+
+                <div class="status-row">
+                    <span>Light</span>
+                    <strong id="heroLight">--</strong>
                 </div>
             </article>
         </section>
@@ -244,6 +257,12 @@
                   src="https://thingspeak.com/channels/3156213/charts/7?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Light"
                   title="Light chart">
                 </iframe>
+
+                <a class="add-chart-card" href="add-device.html">
+                  <span class="add-chart-icon">+</span>
+                  <h3>Add new device</h3>
+                  <p>Connect a new sensor or create a new chart for the dashboard.</p>
+                </a>
               </div>
             </section>
 

@@ -150,6 +150,37 @@ async function loadSensorDataFromApi() {
     }
 }
 
+async function loadLatestThingSpeakData() {
+  const url = "https://api.thingspeak.com/channels/3156213/feeds/last.json";
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Could not load latest ThingSpeak data.");
+    }
+
+    const data = await response.json();
+
+    const latestData = {
+      temperature: Number(data.field1),
+      humidity: Number(data.field2),
+      soilMoisture: Number(data.field3),
+      rain: Number(data.field4),
+      fan: Number(data.field5),
+      airPressure: Number(data.field6),
+      light: Number(data.field7)
+    };
+
+    console.log("Latest ThingSpeak data:", latestData);
+
+    addLog("Latest ThingSpeak sensor data loaded from API.");
+  } catch (error) {
+    console.error(error);
+    addLog("Failed to load ThingSpeak sensor data.");
+  }
+}
+
 function setStatus(element, text, className) {
     element.textContent = text;
     element.className = `status ${className}`;
@@ -251,6 +282,65 @@ async function getWeather() {
         weatherResult.innerHTML = `<p>${error.message}</p>`;
         addLog("Weather API request failed.");
     }
+}
+
+async function loadLatestThingSpeakHeroData() {
+  const url = "https://api.thingspeak.com/channels/3156213/feeds/last.json";
+
+  const systemStatus = document.getElementById("systemStatus");
+  const heroTemperature = document.getElementById("heroTemperature");
+  const heroHumidity = document.getElementById("heroHumidity");
+  const heroAirPressure = document.getElementById("heroAirPressure");
+  const heroFanStatus = document.getElementById("heroFanStatus");
+  const heroLight = document.getElementById("heroLight");
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error("Could not load ThingSpeak data.");
+    }
+
+    const data = await response.json();
+
+    const temperature = Number(data.field1);
+    const humidity = Number(data.field2);
+    const airPressure = Number(data.field6);
+    const fan = Number(data.field5);
+    const light = Number(data.field7);
+
+    heroTemperature.textContent = Number.isFinite(temperature)
+      ? `${temperature.toFixed(1)} °C`
+      : "-- °C";
+
+    heroHumidity.textContent = Number.isFinite(humidity)
+      ? `${humidity.toFixed(0)} %`
+      : "-- %";
+
+    heroAirPressure.textContent = Number.isFinite(airPressure)
+      ? `${airPressure.toFixed(1)} hPa`
+      : "--";
+
+    heroFanStatus.textContent = fan === 1 ? "ON" : "OFF";
+
+    heroLight.textContent = Number.isFinite(light)
+      ? `${light.toFixed(0)} lux`
+      : "--";
+
+    const entryDate = new Date(data.created_at).toLocaleString();
+
+    systemStatus.textContent = `Last sensor update: ${entryDate}`;
+
+    if (typeof addLog === "function") {
+      addLog("Latest ThingSpeak sensor data loaded.");
+    }
+  } catch (error) {
+    systemStatus.textContent = "ThingSpeak data could not be loaded.";
+
+    if (typeof addLog === "function") {
+      addLog("Failed to load latest ThingSpeak sensor data.");
+    }
+  }
 }
 
 function addChatMessage(sender, message, type) {
@@ -396,6 +486,8 @@ function init() {
     if (appState.user) {
         addLog("Smart Home Monitoring System started.");
     }
+
+    loadLatestThingSpeakHeroData();
 }
 
 init();
