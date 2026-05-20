@@ -1,0 +1,13 @@
+{
+  "name": "smart-home-monitoring-system",
+  "version": "1.0.0",
+  "description": "Browser Programming smart home monitoring dashboard with AI assistant chat.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}

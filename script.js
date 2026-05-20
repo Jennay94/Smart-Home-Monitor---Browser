@@ -53,6 +53,7 @@ const themeToggle = document.getElementById("themeToggle");
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.getElementById("navLinks");
 const mainHeader = document.querySelector(".site-header");
+const elements = { themeToggle, menuToggle, navLinks };
 
 function addLog(message) {
     const listItem = document.createElement("li");
@@ -336,59 +337,66 @@ function sendChatMessage() {
     addLog("Chat message sent.");
 }
 
-function loadSavedTheme() {
-    const savedTheme = localStorage.getItem("smartHomeTheme");
+function setupTheme() {
+  const storedTheme = localStorage.getItem("smart-home-theme");
 
-    if (savedTheme === "dark") {
-        document.body.classList.add("dark");
-    }
-}
+  if (storedTheme === "dark") {
+    document.body.classList.add("dark");
+  }
 
-themeToggle.addEventListener("click", () => {
+  elements.themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
 
-    const isDark = document.body.classList.contains("dark");
-    localStorage.setItem("smartHomeTheme", isDark ? "dark" : "light");
-
-    addLog("Theme changed.");
-});
-
-menuToggle.addEventListener("click", () => {
-    const isOpen = navLinks.classList.toggle("open");
-    menuToggle.setAttribute("aria-expanded", String(isOpen));
-});
-
-loginBtn.addEventListener("click", loginUser);
-logoutBtn.addEventListener("click", logoutUser);
-
-passwordInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        loginUser();
-    }
-});
-
-temperatureSlider.addEventListener("input", updateSensorValues);
-humiditySlider.addEventListener("input", updateSensorValues);
-airQualitySlider.addEventListener("input", updateSensorValues);
-energySlider.addEventListener("input", updateSensorValues);
-
-loadSensorDataBtn.addEventListener("click", loadSensorDataFromApi);
-runAutomationBtn.addEventListener("click", runSmartHomeAutomation);
-
-weatherBtn.addEventListener("click", getWeather);
-
-sendChatBtn.addEventListener("click", sendChatMessage);
-
-chatInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-        sendChatMessage();
-    }
-});
-
-loadSavedTheme();
-updateAuthView();
-updateSensorValues();
-
-if (appState.user) {
-    addLog("Smart Home Monitoring System started.");
+    const theme = document.body.classList.contains("dark") ? "dark" : "light";
+    localStorage.setItem("smart-home-theme", theme);
+  });
 }
+
+
+function setupNavigation() {
+    menuToggle.addEventListener("click", () => {
+        const isOpen = navLinks.classList.toggle("open");
+        menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+}
+
+function init() {
+    setupTheme();
+    setupNavigation();
+
+    loginBtn.addEventListener("click", loginUser);
+    logoutBtn.addEventListener("click", logoutUser);
+
+    passwordInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            loginUser();
+        }
+    });
+
+    temperatureSlider.addEventListener("input", updateSensorValues);
+    humiditySlider.addEventListener("input", updateSensorValues);
+    airQualitySlider.addEventListener("input", updateSensorValues);
+    energySlider.addEventListener("input", updateSensorValues);
+
+    loadSensorDataBtn.addEventListener("click", loadSensorDataFromApi);
+    runAutomationBtn.addEventListener("click", runSmartHomeAutomation);
+
+    weatherBtn.addEventListener("click", getWeather);
+
+    sendChatBtn.addEventListener("click", sendChatMessage);
+
+    chatInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            sendChatMessage();
+        }
+    });
+
+    updateAuthView();
+    updateSensorValues();
+
+    if (appState.user) {
+        addLog("Smart Home Monitoring System started.");
+    }
+}
+
+init();
