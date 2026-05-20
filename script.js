@@ -50,6 +50,7 @@ const chatInput = document.getElementById("chatInput");
 const sendChatBtn = document.getElementById("sendChatBtn");
 
 const themeToggle = document.getElementById("themeToggle");
+const mainHeader = document.querySelector(".main-header");
 
 function addLog(message) {
     const listItem = document.createElement("li");
@@ -340,6 +341,15 @@ function loadSavedTheme() {
         document.body.classList.add("dark");
     }
 }
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("smartHomeTheme", isDark ? "dark" : "light");
+
+    addLog("Theme changed.");
+});
 
 themeToggle.addEventListener("click", () => {
     document.body.classList.toggle("dark");
