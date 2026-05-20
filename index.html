@@ -23,6 +23,7 @@
                 <li><a href="#weatherSection">Weather API</a></li>
                 <li><a href="#automationSection">Automation</a></li>
                 <li><a href="#chatSection">AI Chat</a></li>
+                <li><a href="#thingspeak">ThingSpeak Data</a></li>
                 <li><a href="#eventLogSection">Event Log</a></li>
             </ul>
 
@@ -189,6 +190,61 @@
                     <input type="text" id="chatInput" placeholder="Ask the AI assistant...">
                     <button id="sendChatBtn">Send</button>
                 </div>
+            </section>
+
+            <section class="section" id="thingspeak">
+              <div class="section-heading">
+                <p class="eyebrow">ThingSpeak API</p>
+                <h2>Historical Sensor Charts</h2>
+                <p>
+                  These charts show real historical sensor data from a public ThingSpeak channel.
+                  The data was originally collected by an ESP32-based sensor system.
+                </p>
+              </div>
+
+              <div class="chart-grid">
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/1?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Temperature"
+                  title="Temperature chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/2?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Humidity"
+                  title="Humidity chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/3?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Soil%20Moisture"
+                  title="Soil moisture chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/4?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Rain"
+                  title="Rain chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/5?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Fan"
+                  title="Fan chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/6?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Air%20Pressure"
+                  title="Air pressure chart">
+                </iframe>
+
+                <iframe
+                  class="thingspeak-chart"
+                  src="https://thingspeak.com/channels/3156213/charts/7?bgcolor=%23ffffff&color=%232f7d32&dynamic=true&results=60&type=line&title=Light"
+                  title="Light chart">
+                </iframe>
+              </div>
             </section>
 
             <section id="eventLogSection" class="card">
