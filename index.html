@@ -212,6 +212,40 @@
             </section>
 
             <section class="section" id="thingspeak">
+                <section id="addDeviceSection" class="card add-device-card">
+    <h2>Add Device</h2>
+    <p class="muted">
+        Add a new smart home device to the monitoring dashboard.
+        This demo stores the device only in the browser state.
+    </p>
+
+    <form id="addDeviceForm" class="add-device-form">
+        <label for="deviceNameInput">Device name</label>
+        <input 
+            type="text" 
+            id="deviceNameInput" 
+            placeholder="Example: Living room fan"
+        >
+
+        <label for="deviceTypeInput">Device type</label>
+        <select id="deviceTypeInput">
+            <option value="Fan">Fan</option>
+            <option value="Light">Light</option>
+            <option value="Sensor">Sensor</option>
+            <option value="Air purifier">Air purifier</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <button type="submit">Add Device</button>
+    </form>
+
+    <div class="device-list-wrapper">
+        <h3>Added Devices</h3>
+        <ul id="deviceList" class="device-list">
+            <li>No devices added yet.</li>
+        </ul>
+    </div>
+</section>
               <div class="section-heading">
                 <p class="eyebrow">ThingSpeak API</p>
                 <h2>Historical Sensor Charts</h2>

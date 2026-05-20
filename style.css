@@ -323,6 +323,29 @@ input[type="range"] {
     accent-color: var(--primary-color);
 }
 
+select {
+    width: 100%;
+    padding: 0.85rem 0.95rem;
+    margin: 0.4rem 0 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    font-size: 1rem;
+    color: var(--text-color);
+    background: rgba(255, 255, 255, 0.86);
+    outline: none;
+}
+
+body.dark select {
+    background: #1b241c;
+    color: #f8fafc;
+}
+
+select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.14);
+}
+
+
 button {
     padding: 0.85rem 1.15rem;
     border: none;
@@ -530,7 +553,7 @@ button:hover {
 footer {
     text-align: center;
     padding: 1.5rem;
-    color: rgba(248, 250, 252, 0.62);
+    color: var(--muted-color);
 }
 
 /* ===== Responsive ===== */
@@ -640,6 +663,41 @@ footer {
     .theme-toggle {
         width: 100%;
     }
+}
+
+
+.add-device-card {
+    margin-bottom: 1.5rem;
+}
+
+.add-device-form {
+    display: grid;
+    gap: 0.4rem;
+    margin-top: 1rem;
+}
+
+.device-list-wrapper {
+    margin-top: 1.2rem;
+}
+
+.device-list {
+    padding-left: 0;
+    list-style: none;
+}
+
+.device-list-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    background: rgba(34, 197, 94, 0.06);
+}
+
+.device-list-item span {
+    display: block;
+    color: var(--muted-color);
 }
 
 /* ===== ThingSpeak Charts ===== */
