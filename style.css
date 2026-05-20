@@ -316,6 +316,14 @@ body.dark select {
   background: rgba(255, 255, 255, 0.08);
   color: #f8fafc;
 }
+select option {
+  background: var(--surface);
+  color: var(--text);
+}
+body.dark select option {
+  background: #1b241c;
+  color: #f8fafc;
+}
 
 input:focus,
 select:focus {
