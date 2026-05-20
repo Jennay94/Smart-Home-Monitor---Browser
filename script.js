@@ -140,6 +140,12 @@ function loginUser() {
         loginMessage.textContent = "";
 
         updateAuthView();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
         addLog(`${username} logged in successfully.`);
     } else {
         loginMessage.textContent = "Invalid username or password.";
@@ -154,6 +160,11 @@ function logoutUser() {
     localStorage.removeItem("smartHomeLoggedInUser");
 
     updateAuthView();
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 /* ===== Sensor dashboard ===== */
